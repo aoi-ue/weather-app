@@ -15,7 +15,7 @@ function Forms() {
     city: "",
   });
 
-  const [condition, setCondition] = useState([]);
+  const [condition, setCondition] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,6 +84,14 @@ function Forms() {
           </Col>
         </Row>
       </Form>
+
+      <Row>
+        <p>Temperature: {condition ? condition.temp_min : "nothing here"}</p>
+      </Row>
+
+      <Row>
+        <p>Humidity: {condition ? condition.humidity : "nothing here"}</p>
+      </Row>
     </Container>
   );
 }
