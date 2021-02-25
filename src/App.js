@@ -8,23 +8,8 @@ import './App.css';
 
 const dotenv = require('dotenv');
 dotenv.config();
-// console.log(`Your port is ${process.env.REACT_APP_API_KEY}`); 
+console.log(`Your key is ${process.env.REACT_APP_API_KEY}`); 
 
-// const ExampleToast = ({ children }) => {
-//   const [show, toggleShow] = useState(true);
-
-//   return (
-//     <>
-//       {!show && <Button onClick={() => toggleShow(true)}>Show Toast</Button>}
-//       <Toast show={show} onClose={() => toggleShow(false)}>
-//         <Toast.Header>
-//           <strong className="mr-auto">React-Bootstrap</strong>
-//         </Toast.Header>
-//         <Toast.Body>{children}</Toast.Body>
-//       </Toast>
-//     </>
-//   );
-// };
 
 const App = () => (
   <Container className="p-3">
