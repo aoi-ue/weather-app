@@ -4,10 +4,13 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
+import Image from "react-bootstrap/Image"; 
 import Form from "react-bootstrap/Form";
 // import FormControl from "react-bootstrap/FormControl";
 
 import Button from "react-bootstrap/Button";
+
+import {Warning} from "./Warning"; 
 
 function Forms() {
   const [location, setLocation] = useState({
@@ -15,20 +18,27 @@ function Forms() {
     city: "",
   });
 
-  const [condition, setCondition] = useState();
+  const [condition, setCondition] = useState([]);
+
+  const [found, setFound] = useState(true); 
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(
         `http://api.openweathermap.org/data/2.5/weather?q=${location.country},${location.city}&appid=${process.env.REACT_APP_API_KEY}`
       );
-      const data = await response.json();
+      const data = await response.json(); 
       setCondition(data.main);
     };
 
-    console.log(condition);
-
     fetchData();
+
+    if (!location) {
+      setFound(false);  
+    } else {
+      setFound(true); 
+    }
+
   }, [location]);
 
   const handleChange = (e) => {
@@ -45,6 +55,7 @@ function Forms() {
 
   return (
     <Container>
+      <Warning found={true}/> 
       <Form inline onSubmit={handleSubmit}>
         <Row>
           <Col>
@@ -79,18 +90,35 @@ function Forms() {
 
           <Col>
             <Button type="submit" className="mb-2">
-              Submit
+              Search
             </Button>
           </Col>
         </Row>
       </Form>
 
       <Row>
-        <p>Temperature: {condition ? condition.temp_min : "nothing here"}</p>
+        <Col xs={6} md={4}>
+          <Image src="icons.png" rounded />
+        </Col>
       </Row>
 
       <Row>
-        <p>Humidity: {condition ? condition.humidity : "nothing here"}</p>
+        <p>
+          Temperature:{" "}
+          {condition
+            ? Math.round(condition.temp_min - 273.15) + "°C"
+            : "nothing here"}{" "}
+          ~ 
+           {condition
+            ? Math.round(condition.temp_max - 273.15) + "°C"
+            : "nothing here"}
+        </p>
+      </Row>
+
+      <Row>
+        <p>
+          Humidity: {condition ? condition.humidity + "%" : "nothing here"}{" "}
+        </p>
       </Row>
     </Container>
   );
