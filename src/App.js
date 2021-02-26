@@ -8,8 +8,6 @@ import './App.css';
 
 const dotenv = require('dotenv');
 dotenv.config();
-console.log(`Your key is ${process.env.REACT_APP_API_KEY}`); 
-
 
 const App = () => (
   <Container className="p-3">
