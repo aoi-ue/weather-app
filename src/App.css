@@ -1,3 +1,11 @@
 .header {
   text-align: center;
 }
+
+sprite
+{
+    background:url(/src/icons.png) no-repeat top left;
+    width:25px;
+    height:25px;
+    float:left
+}
