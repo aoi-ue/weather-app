@@ -4,13 +4,15 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import Image from "react-bootstrap/Image"; 
+import Image from "react-bootstrap/Image";
 import Form from "react-bootstrap/Form";
 // import FormControl from "react-bootstrap/FormControl";
 
 import Button from "react-bootstrap/Button";
 
-import {Warning} from "./Warning"; 
+import icons from "./icons.png";
+
+import Warning from "./Warning.js";
 
 function Forms() {
   const [location, setLocation] = useState({
@@ -18,28 +20,31 @@ function Forms() {
     city: "",
   });
 
+  const [weather, setWeather] = useState('N/A');
+
   const [condition, setCondition] = useState([]);
 
-  const [found, setFound] = useState(true); 
+  const [visible, setVisible] = useState(false);
+
+  const fetchData = async () => {
+    const response = await fetch(
+      `http://api.openweathermap.org/data/2.5/weather?q=${location.country},${location.city}&appid=${process.env.REACT_APP_API_KEY}`
+    );
+    const data = await response.json();
+
+    if (data.cod !== 200) {
+      console.log("err");
+      setVisible(true);
+    } else {
+      setCondition(data.main);
+      setWeather(data.weather[0].description); 
+      setVisible(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(
-        `http://api.openweathermap.org/data/2.5/weather?q=${location.country},${location.city}&appid=${process.env.REACT_APP_API_KEY}`
-      );
-      const data = await response.json(); 
-      setCondition(data.main);
-    };
-
-    fetchData();
-
-    if (!location) {
-      setFound(false);  
-    } else {
-      setFound(true); 
-    }
-
-  }, [location]);
+    console.log("render");
+  }, []);
 
   const handleChange = (e) => {
     setLocation((prevState) => ({
@@ -50,14 +55,19 @@ function Forms() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("A name was submitted: " + location.country + location.city);
+
+    if (location.city !== "") {
+      fetchData();  
+    }
+    // alert("A name was submitted: " + location.country + location.city);
   };
 
   return (
     <Container>
-      <Warning found={true}/> 
+      {visible ? <Warning onClose={()=> setVisible(false)} /> : null}
+
       <Form inline onSubmit={handleSubmit}>
-        <Row>
+        <Row className="justify-content-md-center">
           <Col>
             <Form.Label htmlFor="Country" srOnly>
               Country
@@ -98,26 +108,26 @@ function Forms() {
 
       <Row>
         <Col xs={6} md={4}>
-          <Image src="icons.png" rounded />
+          {/* <Image src={icons} rounded /> */}
+          <p> {console.log(weather)} </p> 
         </Col>
       </Row>
 
       <Row>
         <p>
-          Temperature:{" "}
-          {condition
-            ? Math.round(condition.temp_min - 273.15) + "°C"
-            : "nothing here"}{" "}
-          ~ 
-           {condition
-            ? Math.round(condition.temp_max - 273.15) + "°C"
+          Temperature:
+          {condition 
+            ? `${Math.round(condition.temp_min - 273.15)} °C ~  ${Math.round(
+                condition.temp_max - 273.15
+              )} °C`
             : "nothing here"}
         </p>
       </Row>
 
       <Row>
         <p>
-          Humidity: {condition ? condition.humidity + "%" : "nothing here"}{" "}
+          Humidity:
+          {condition ? condition.humidity + "%" : "nothing here"}
         </p>
       </Row>
     </Container>
